@@ -13,7 +13,7 @@ Parameters:
   YourTempBucket:
     Type: String
     Description: S3 bucket for temporary Glue job data storage.
-	
+
   YourversionKey:
     Type: String
     Description: version maintain  in script foldere.
