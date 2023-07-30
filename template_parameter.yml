@@ -28,7 +28,7 @@ Resources:
         Name: glueetl
         ScriptLocation: s3://${YourScriptBucket}/${YourScriptKey}/${YourversionKey}/glue_script.py
       DefaultArguments:
-        "--TempDir": "s3://${YourTempBucket}/temp/"
+        "--TempDir": "s3://${YourScriptBucket}/temp/"
       GlueVersion: "2.0"
       WorkerType: G.1X
       NumberOfWorkers: 2
