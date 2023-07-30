@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for deploying an AWS Glue job and trigger.
+
+Parameters:
+  YourScriptBucket:
+    Type: String
+    Description: S3 bucket where your Glue job script is located.
+
+  YourScriptKey:
+    Type: String
+    Description: S3 object key of your Glue job script.
+
+  YourTempBucket:
+    Type: String
+    Description: S3 bucket for temporary Glue job data storage.
+	
+  YourversionKey:
+    Type: String
+    Description: version maintain  in script foldere.
+
+Resources:
+  GlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: MyGlueJob  
+      Role: !GetAtt GlueServiceRole.Arn
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://${YourScriptBucket}/${YourScriptKey}/${YourversionKey}/glue_script.py
+      DefaultArguments:
+        "--TempDir": "s3://${YourTempBucket}/temp/"
+      GlueVersion: "2.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 2
+
+
+
+  GlueServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-MyRoleForGlueJob"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
